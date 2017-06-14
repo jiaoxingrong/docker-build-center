@@ -197,7 +197,6 @@ RUN echo @testing http://nl.alpinelinux.org/alpine/edge/testing >> /etc/apk/repo
     openssh-client \
     wget \
     vim \
-    supervisor \
     postgresql-dev \
     readline-dev \
     libedit-dev \
@@ -305,7 +304,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     openssl-dev \
     pcre-dev \
     zlib-dev \
-    rsyslog \
     linux-headers \
     curl \
     gnupg \
@@ -395,11 +393,14 @@ RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/let
 COPY templates/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # Copy syslog config
+RUN apk add rsyslog
+
 COPY templates/rsyslog.conf  /etc/
 
 # Copy system config
 COPY templates/profile /etc/
 
+RUN apk add supervisor
 # Copy supervisor config
 COPY templates/supervisor.d/supervisord.conf /etc/
 
