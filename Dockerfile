@@ -295,8 +295,6 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
     --with-file-aio \
     --with-http_v2_module \
   " \
-  &&  addgroup -S ec2-user \
-  &&  adduser -D -h /home/ec2-user -S -s /bin/bash -G ec2-user ec2-user
   && apk add --no-cache --virtual .build-deps \
     gcc \
     libc-dev \
