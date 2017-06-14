@@ -147,8 +147,11 @@ RUN set -xe \
 
 COPY src/docker-php-ext-* src/docker-php-entrypoint /usr/local/bin/
 # 拷贝php-fpm配置
-COPY templates/php-fpm/php-fpm.conf  /usr/local/ect/php-fpm.d/www.conf
-COPY templates/php-fpm/php.ini /usr/local/ect/php/conf.d/php.ini
+
+RUN rm -f /usr/local/ect/php-fpm.conf
+
+COPY templates/php-fpm/php-fpm.conf  /usr/local/ect/php-fpm.conf
+COPY templates/php-fpm/php.ini /usr/local/ect/php/conf.d/docker-php-main.ini
 
 #RUN set -ex \
 #    && cd /usr/local/etc \
@@ -407,7 +410,6 @@ COPY scripts/awslogs-agent-setup.py /data/
 RUN  echo -e  'Amazon Linux AMI release 2016.09\nKernel \\r on an \\m' >  /etc/issue \
      && cd /data/ \
      && python awslogs-agent-setup.py --region ap-northeast-1
-
 
 
 WORKDIR /root
