@@ -387,10 +387,10 @@ COPY scripts/letsencrypt-setup /usr/bin/letsencrypt-setup
 COPY scripts/letsencrypt-renew /usr/bin/letsencrypt-renew
 RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/letsencrypt-setup && chmod 755 /usr/bin/letsencrypt-renew && chmod 755 /start.sh
 
-# Copy our nginx config
+# Copy nginx config
 COPY templates/nginx/nginx.conf /etc/nginx/nginx.conf
 
-# Copy syslog config
+# rsyslog install
 RUN apk add rsyslog
 
 COPY templates/system/rsyslog.conf  /etc/
@@ -398,9 +398,18 @@ COPY templates/system/rsyslog.conf  /etc/
 # Copy system config
 COPY templates/system/profile /etc/
 
-RUN apk add supervisor
-# Copy supervisor config
+# supervisor install
+RUN apk add supervisor \
+    && mkdir /etc/supervisor.d
 COPY templates/supervisor.d/supervisord.conf /etc/
+
+# awslogs agent install
+COPY scripts/awslogs-agent-setup.py /data/
+RUN  echo -e  'Amazon Linux AMI release 2016.09\nKernel \\r on an \\m' >  /etc/issue \
+     && cd /data/ \
+     && python awslogs-agent-setup.py --region ap-northeast-1
+
+
 
 WORKDIR /root
 
