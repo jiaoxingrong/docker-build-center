@@ -393,10 +393,10 @@ COPY templates/nginx/nginx.conf /etc/nginx/nginx.conf
 # Copy syslog config
 RUN apk add rsyslog
 
-COPY templates/rsyslog.conf  /etc/
+COPY templates/system/rsyslog.conf  /etc/
 
 # Copy system config
-COPY templates/profile /etc/
+COPY templates/system/profile /etc/
 
 RUN apk add supervisor
 # Copy supervisor config
