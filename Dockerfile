@@ -397,7 +397,8 @@ RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/let
 COPY templates/nginx/nginx.conf /etc/nginx/nginx.conf
 
 # rsyslog install
-RUN apk add rsyslog
+RUN apk add rsyslog \
+    && mkdir -p /etc/rsyslog.d/
 
 COPY templates/system/rsyslog.conf  /etc/
 
@@ -414,7 +415,9 @@ COPY templates/supervisor.d/supervisord.conf /etc/
 COPY scripts/awslogs-agent-setup.py /data/
 RUN  echo -e  'Amazon Linux AMI release 2016.09\nKernel \\r on an \\m' >  /etc/issue \
      && cd /data/ \
-     && python awslogs-agent-setup.py --region ap-northeast-1
+     && python awslogs-agent-setup.py --region ap-northeast-1 \
+     && sed -i 's#>> /var/log/awslogs.log 2>&1##' /var/awslogs/bin/awslogs-agent-launcher.sh
+
 COPY templates/awslogs/aws.conf /var/awslogs/etc/aws.conf
 COPY templates/awslogs/awslogs.conf /var/awslogs/etc/awslogs.conf
 
