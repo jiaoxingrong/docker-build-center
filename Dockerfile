@@ -417,6 +417,10 @@ RUN  echo -e  'Amazon Linux AMI release 2016.09\nKernel \\r on an \\m' >  /etc/i
 COPY templates/awslogs/aws.conf /var/awslogs/etc/aws.conf
 COPY templates/awslogs/awslogs.conf /var/awslogs/etc/awslogs.conf
 
+# Copy php-fpm config
+COPY conf/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+COPY conf/php.ini /usr/local/etc/php/conf.d/docker-vars.ini
+
 WORKDIR /root
 
 EXPOSE 443 80
