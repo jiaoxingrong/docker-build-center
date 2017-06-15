@@ -392,6 +392,11 @@ RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/let
 # Copy nginx config
 COPY templates/nginx/nginx.conf /etc/nginx/nginx.conf
 
+# Copy php-fpm config
+RUN rm -f /usr/local/ect/php-fpm.conf
+COPY templates/php-fpm/php-fpm.conf  /usr/local/ect/php-fpm.conf
+COPY templates/php-fpm/php.ini /usr/local/ect/php/conf.d/docker-php-main.ini
+
 # rsyslog install
 RUN apk add rsyslog
 
