@@ -189,8 +189,9 @@ RUN set -ex \
         echo 'listen = [::]:9000'; \
     } | tee php-fpm.d/zz-docker.conf
 
-COPY templates/php-fpm/php-fpm.conf  /usr/local/ect/php-fpm.d/php-fpm.conf
-COPY templates/php-fpm/php.ini /usr/local/ect/php/conf.d/docker-php-main.ini
+# Copy php-fpm config
+COPY conf/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
+COPY conf/php.ini /usr/local/etc/php/conf.d/docker-vars.ini
 
 RUN docker-php-source extract
 
@@ -416,10 +417,6 @@ RUN  echo -e  'Amazon Linux AMI release 2016.09\nKernel \\r on an \\m' >  /etc/i
      && python awslogs-agent-setup.py --region ap-northeast-1
 COPY templates/awslogs/aws.conf /var/awslogs/etc/aws.conf
 COPY templates/awslogs/awslogs.conf /var/awslogs/etc/awslogs.conf
-
-# Copy php-fpm config
-COPY conf/php-fpm.conf /usr/local/etc/php-fpm.d/www.conf
-COPY conf/php.ini /usr/local/etc/php/conf.d/docker-vars.ini
 
 WORKDIR /root
 
