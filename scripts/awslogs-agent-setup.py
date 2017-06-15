@@ -783,7 +783,7 @@ class CloudWatchLogsAgentSetup:
         self.setup_agent_as_daemon()
         self.setup_agent_log_file_rotation()
         # Restart the agent.
-        subprocess.call(['service', 'awslogs', 'restart'], stderr=self.log_file, stdout=self.log_file)
+        # subprocess.call(['service', 'awslogs', 'restart'], stderr=self.log_file, stdout=self.log_file)
         self.setup_agent_nanny()
         
         self.write_generated_file_log()
@@ -841,7 +841,7 @@ class CloudWatchLogsAgentSetup:
         #     self.write_agent_config_file()
         #
         # message("\nStep 5 of 5: Setting up agent as a daemon ...")
-        # self.setup_daemon()
+        self.setup_daemon()
         # status("DONE")
         #
         # rerun_cmd = "sudo python ./awslogs-agent-setup.py --region " + self.region + " --only-generate-config"
