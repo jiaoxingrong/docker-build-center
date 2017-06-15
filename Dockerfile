@@ -148,46 +148,49 @@ RUN set -xe \
 COPY src/docker-php-ext-* src/docker-php-entrypoint /usr/local/bin/
 # 拷贝php-fpm配置
 
-RUN rm -f /usr/local/ect/php-fpm.conf
+#RUN rm -f /usr/local/ect/php-fpm.conf
+#
+#COPY templates/php-fpm/php-fpm.conf  /usr/local/ect/php-fpm.conf
+#COPY templates/php-fpm/php.ini /usr/local/ect/php/conf.d/docker-php-main.ini
 
-COPY templates/php-fpm/php-fpm.conf  /usr/local/ect/php-fpm.conf
+RUN set -ex \
+    && cd /usr/local/etc \
+    && if [ -d php-fpm.d ]; then \
+        # for some reason, upstream's php-fpm.conf.default has "include=NONE/etc/php-fpm.d/*.conf"
+        sed 's!=NONE/!=!g' php-fpm.conf.default | tee php-fpm.conf > /dev/null; \
+        cp php-fpm.d/www.conf.default php-fpm.d/www.conf; \
+    else \
+        # PHP 5.x doesn't use "include=" by default, so we'll create our own simple config that mimics PHP 7+ for consistency
+        mkdir php-fpm.d; \
+        cp php-fpm.conf.default php-fpm.d/www.conf; \
+        { \
+            echo '[global]'; \
+            echo 'include=etc/php-fpm.d/*.conf'; \
+        } | tee php-fpm.conf; \
+    fi \
+    && { \
+        echo '[global]'; \
+        echo 'error_log = /data/logs/php-fpm-err.log'; \
+        echo; \
+        echo '[www]'; \
+        echo '; if we send this to /proc/self/fd/1, it never appears'; \
+        echo 'access.log = /proc/self/fd/2'; \
+        echo; \
+        echo 'clear_env = no'; \
+        echo; \
+        echo '; Ensure worker stdout and stderr are sent to the main error log.'; \
+        echo 'catch_workers_output = yes'; \
+    } | tee php-fpm.d/docker.conf \
+    && { \
+        echo '[global]'; \
+        echo 'daemonize = no'; \
+        echo; \
+        echo '[www]'; \
+        echo 'listen = [::]:9000'; \
+    } | tee php-fpm.d/zz-docker.conf
+
+COPY templates/php-fpm/php-fpm.conf  /usr/local/ect/php-fpm.d/php-fpm.conf
 COPY templates/php-fpm/php.ini /usr/local/ect/php/conf.d/docker-php-main.ini
-
-#RUN set -ex \
-#    && cd /usr/local/etc \
-#    && if [ -d php-fpm.d ]; then \
-#        # for some reason, upstream's php-fpm.conf.default has "include=NONE/etc/php-fpm.d/*.conf"
-#        sed 's!=NONE/!=!g' php-fpm.conf.default | tee php-fpm.conf > /dev/null; \
-#        cp php-fpm.d/www.conf.default php-fpm.d/www.conf; \
-#    else \
-#        # PHP 5.x doesn't use "include=" by default, so we'll create our own simple config that mimics PHP 7+ for consistency
-#        mkdir php-fpm.d; \
-#        cp php-fpm.conf.default php-fpm.d/www.conf; \
-#        { \
-#            echo '[global]'; \
-#            echo 'include=etc/php-fpm.d/*.conf'; \
-#        } | tee php-fpm.conf; \
-#    fi \
-#    && { \
-#        echo '[global]'; \
-#        echo 'error_log = /proc/self/fd/2'; \
-#        echo; \
-#        echo '[www]'; \
-#        echo '; if we send this to /proc/self/fd/1, it never appears'; \
-#        echo 'access.log = /proc/self/fd/2'; \
-#        echo; \
-#        echo 'clear_env = no'; \
-#        echo; \
-#        echo '; Ensure worker stdout and stderr are sent to the main error log.'; \
-#        echo 'catch_workers_output = yes'; \
-#    } | tee php-fpm.d/docker.conf \
-#    && { \
-#        echo '[global]'; \
-#        echo 'daemonize = no'; \
-#        echo; \
-#        echo '[www]'; \
-#        echo 'listen = [::]:9000'; \
-#    } | tee php-fpm.d/zz-docker.conf
 
 RUN docker-php-source extract
 
@@ -392,11 +395,6 @@ RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/let
 # Copy nginx config
 COPY templates/nginx/nginx.conf /etc/nginx/nginx.conf
 
-# Copy php-fpm config
-RUN rm -f /usr/local/ect/php-fpm.conf
-COPY templates/php-fpm/php-fpm.conf  /usr/local/ect/php-fpm.conf
-COPY templates/php-fpm/php.ini /usr/local/ect/php/conf.d/docker-php-main.ini
-
 # rsyslog install
 RUN apk add rsyslog
 
@@ -418,7 +416,6 @@ RUN  echo -e  'Amazon Linux AMI release 2016.09\nKernel \\r on an \\m' >  /etc/i
      && python awslogs-agent-setup.py --region ap-northeast-1
 COPY templates/awslogs/aws.conf /var/awslogs/etc/aws.conf
 COPY templates/awslogs/awslogs.conf /var/awslogs/etc/awslogs.conf
-
 
 WORKDIR /root
 
