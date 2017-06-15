@@ -374,7 +374,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 # nginx site conf
 RUN mkdir -p /etc/nginx/vhost/ && \
     mkdir -p /etc/nginx/ssl/ && \
-    mkdir -p /var/www/ && \
+    mkdir -p /var/www/html && \
     mkdir -p /var/log/supervisor && \
     mkdir -p /data/logs && \
     chmod -R 777 /data/logs && \
@@ -405,11 +405,14 @@ RUN apk add supervisor \
     && mkdir /etc/supervisor.d
 COPY templates/supervisor.d/supervisord.conf /etc/
 
+
 # awslogs agent install
 COPY scripts/awslogs-agent-setup.py /data/
 RUN  echo -e  'Amazon Linux AMI release 2016.09\nKernel \\r on an \\m' >  /etc/issue \
      && cd /data/ \
      && python awslogs-agent-setup.py --region ap-northeast-1
+COPY templates/awslogs/aws.conf /var/awslogs/etc/aws.conf
+COPY templates/awslogs/awslogs.conf /var/awslogs/etc/awslogs.conf
 
 
 WORKDIR /root
