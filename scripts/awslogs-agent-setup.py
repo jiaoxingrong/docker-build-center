@@ -780,11 +780,11 @@ class CloudWatchLogsAgentSetup:
     def setup_daemon(self):
         self.write_daemon_script()
         self.write_launcher_file()
-        self.setup_agent_as_daemon()
+        # self.setup_agent_as_daemon()
         self.setup_agent_log_file_rotation()
         # Restart the agent.
         # subprocess.call(['service', 'awslogs', 'restart'], stderr=self.log_file, stdout=self.log_file)
-        self.setup_agent_nanny()
+        # self.setup_agent_nanny()
         
         self.write_generated_file_log()
         self.write_awslogs_version_script()
