@@ -4,7 +4,7 @@ if [[ ${AWSLOGS_REGION} ]]; then
 fi
 
 if [[ ${AWSLOGS_ACCESS_KEY_ID} ]] &&  [[ ${AWSLOGS_SECRET_ACCESS_KEY} ]]; then
-    echo -e "aws_access_key_id = ${AWSLOGS_ACCESS_KEY_ID}\naws_secret_access_key = ${AWSLOGS_SECRET_ACCESS_KEY}" >> /var/awslogs/etc/aws.conf
+    echo -e "aws_access_key_id = ${AWS_ACCESS_KEY_ID}\naws_secret_access_key = ${AWS_SECRET_ACCESS_KEY}\n" >> /var/awslogs/etc/aws.conf
 fi
 
 /bin/sh /var/awslogs/bin/awslogs-agent-launcher.sh
