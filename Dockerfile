@@ -379,6 +379,7 @@ RUN GPG_KEYS=B0F4253373F8F6F510D42178520A9993A1C052F8 \
 RUN mkdir -p /etc/nginx/vhost/ && \
     mkdir -p /etc/nginx/ssl/ && \
     mkdir -p /var/www/html && \
+    mkdir -p /data/htdocs/ && \
     mkdir -p /var/log/supervisor && \
     mkdir -p /data/logs && \
     chmod -R 777 /data/logs && \
@@ -395,6 +396,7 @@ RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/let
 
 # Copy nginx config
 COPY templates/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY templates/nginx/health_check.conf /etc/nginx/health_check.conf
 
 # rsyslog install
 RUN apk add rsyslog \
