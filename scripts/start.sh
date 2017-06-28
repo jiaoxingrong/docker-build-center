@@ -1,4 +1,11 @@
 #!/bin/bash -
 
 # Start supervisord and services
-exec /usr/bin/supervisord -n -c /etc/supervisord.conf
+/usr/bin/supervisord  -c  /etc/supervisord.conf
+
+while true;do
+   if [ ! -f /var/start/status ];then
+        exit 0
+   fi
+   sleep 10
+done

@@ -380,6 +380,7 @@ RUN mkdir -p /etc/nginx/vhost/ && \
     mkdir -p /etc/nginx/ssl/ && \
     mkdir -p /var/www/html && \
     mkdir -p /data/htdocs/ && \
+    echo "It's work." > /data/htdocs/index.html && \
     mkdir -p /var/log/supervisor && \
     mkdir -p /data/logs && \
     chmod -R 777 /data/logs && \
@@ -396,16 +397,18 @@ RUN chmod 755 /usr/bin/pull && chmod 755 /usr/bin/push && chmod 755 /usr/bin/let
 
 # Copy nginx config
 COPY templates/nginx/nginx.conf /etc/nginx/nginx.conf
-COPY templates/nginx/health_check.conf /etc/nginx/health_check.conf
+COPY templates/nginx/health_check.conf /etc/nginx/vhost/health_check.conf
+
 
 # rsyslog install
 RUN apk add rsyslog \
     && mkdir -p /etc/rsyslog.d/
-
 COPY templates/system/rsyslog.conf  /etc/
+
 
 # Copy system config
 COPY templates/system/profile /etc/
+
 
 # supervisor install
 RUN apk add supervisor \
@@ -422,8 +425,13 @@ RUN  echo -e  'Amazon Linux AMI release 2016.09\nKernel \\r on an \\m' >  /etc/i
 
 COPY templates/awslogs/aws.conf /var/awslogs/etc/aws.conf
 COPY templates/awslogs/awslogs.conf /var/awslogs/etc/awslogs.conf
-
 COPY scripts/awslogs.sh /data/scripts/
+
+# deploy start.sh
+RUN mkdir  /var/start/ \
+    && touch /var/start/status \
+    && chmod 777 -R /var/start/
+
 WORKDIR /root
 
 EXPOSE 443 80
