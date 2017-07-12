@@ -98,6 +98,7 @@ RUN set -xe \
         bzip2 \
         bzip2-dev \
         gmp \
+        gmp-dev \
     \
     && export CFLAGS="$PHP_CFLAGS" \
         CPPFLAGS="$PHP_CPPFLAGS" \
