@@ -94,6 +94,7 @@ RUN set -xe \
         sqlite-dev \
         gettext \
         libbz2 \
+        bzip2 \
         gmp \
     \
     && export CFLAGS="$PHP_CFLAGS" \

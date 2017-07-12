@@ -1,4 +1,4 @@
-#!/bin/bash -
+#!/bin/bash
 
 # Start supervisord and services
 /usr/bin/supervisord  -c  /etc/supervisord.conf
