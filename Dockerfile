@@ -92,6 +92,9 @@ RUN set -xe \
         libxml2-dev \
         openssl-dev \
         sqlite-dev \
+        gettext \
+        libbz2 \
+        gmp \
     \
     && export CFLAGS="$PHP_CFLAGS" \
         CPPFLAGS="$PHP_CPPFLAGS" \
@@ -112,12 +115,18 @@ RUN set -xe \
         --enable-mbstring \
 # --enable-mysqlnd is included here because it's harder to compile after the fact than extensions are (since it's a plugin for several extensions, not an extension in itself)
         --enable-mysqlnd \
-        \
+        --enable-bcmath \
+        --enable-shmop \
+        --enable-sockets \
+        --enable-pcntl \
         --with-curl \
         --with-libedit \
         --with-openssl \
         --with-zlib \
-        \
+        --with-gmp \
+        --with-gettext \
+        --with-bz2 \
+
 # bundled pcre is too old for s390x (which isn't exactly a good sign)
 # /usr/src/php/ext/pcre/pcrelib/pcre_jit_compile.c:65:2: error: #error Unsupported architecture
         --with-pcre-regex=/usr \
