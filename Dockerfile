@@ -95,6 +95,7 @@ RUN set -xe \
         gettext \
         libbz2 \
         bzip2 \
+        bzip2-dev \
         gmp \
     \
     && export CFLAGS="$PHP_CFLAGS" \
