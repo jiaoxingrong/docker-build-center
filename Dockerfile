@@ -93,6 +93,7 @@ RUN set -xe \
         openssl-dev \
         sqlite-dev \
         gettext \
+        gettext-dev \
         libbz2 \
         bzip2 \
         bzip2-dev \
