@@ -445,6 +445,10 @@ RUN mkdir  /var/start/ \
     && touch /var/start/status \
     && chmod 777 -R /var/start/
 
+# deploy logrotate
+RUN apk add logrotate
+
+
 WORKDIR /root
 
 EXPOSE 443 80
